@@ -24,3 +24,20 @@ function showDiv(selectedDiv) {
 homeLink.addEventListener('click', () => showDiv(homeDiv));
 aboutLink.addEventListener('click', () => showDiv(aboutDiv));
 contactLink.addEventListener('click', () => showDiv(contactDiv));
+
+async function fetchData() {
+    const file = "travel_recommendation_api.json";
+    try {
+        const response = await fetch(file);
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+        const json = await response.json();
+        console.log(json);
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+fetchData()
