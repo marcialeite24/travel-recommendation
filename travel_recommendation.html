@@ -19,7 +19,7 @@
                 <li><a href="#about" id="about-link">About Us</a></li>
                 <li><a href="#contact" id="contact-link">Contact Us</a></li>
             </ul>
-            <div class="navbar-search">
+            <div id="navbar-search" class="navbar-search">
                 <input type="text" placeholder="Enter a destination or keyword" />
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <button>Search</button>
@@ -75,13 +75,25 @@
                 </div>
             </div>
 
-            <!-- about us -->
-            <div id="contact">
-                <h1>Contact Us</h1>
-                <p>Get in touch</p>
-                <form>
-
-                </form>
+            <!-- contact us -->
+            <div id="contact" class="contact-section">
+                <div class="contact-content">
+                    <div>
+                        <h1>Contact Us</h1>
+                        <p>Get in touch</p>
+                    </div>
+                    <div class="contact-form">
+                        <form  method="POST">
+                            <label for="fname">Name</label> 
+                            <input type="text" name="fname" placeholder="Enter your name" required>
+                            <label for="femail">Email</label> 
+                            <input type="email" name="email" placeholder="Enter your email" required>
+                            <label for="fmessage">Message</label> 
+                            <textarea name="message" placeholder="Enter your message" required></textarea>
+                            <button type="submit">Submit</button>
+                        </form>
+                    </div> 
+                </div>
             </div>
 
             <div class="line"></div>
