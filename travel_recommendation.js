@@ -8,21 +8,17 @@ const contactDiv = document.getElementById('contact');
 const navbarSearch = document.getElementById('navbar-search');
 
 function showDiv(selectedDiv) {
-    const divs = [homeDiv, aboutDiv, contactDiv, navbarSearch];
+    const divs = [homeDiv, aboutDiv, contactDiv];
+
     divs.forEach(div => {
-        if(div == navbarSearch) {
-            if(selectedDiv == homeDiv ) {
-                div.style.display = 'block';
-            } else {
-                div.style.display = 'none';
-                const navbarLinks = document.getElementsByClassName('navbar-links');
-                navbarLinks.style.marginRight = "50%";
-            }
-        } else {            
-            div.style.display = div === selectedDiv ? 'block' : 'none';
-        }        
-        
+        div.style.display = div === selectedDiv ? 'block' : 'none';
     });
+
+    if (selectedDiv === homeDiv) {
+        navbarSearch.style.zIndex = '1';
+    } else {
+        navbarSearch.style.zIndex = '-10';
+    }
 }
 
 homeLink.addEventListener('click', () => showDiv(homeDiv));
