@@ -13,11 +13,12 @@ function showDiv(selectedDiv) {
     const divs = [homeDiv, aboutDiv, contactDiv];
 
     divs.forEach(div => {
-        div.style.display = div === selectedDiv ? 'block' : 'none';
+        div.style.display = div === selectedDiv && selectedDiv !== homeDiv ? 'block' : 'none';
     });
 
     if (selectedDiv === homeDiv) {
         navbarSearch.style.zIndex = '1';
+        homeDiv.style.display = 'flex';
     } else {
         navbarSearch.style.zIndex = '-10';
     }
