@@ -7,6 +7,8 @@ const aboutDiv = document.getElementById('about');
 const contactDiv = document.getElementById('contact');
 const navbarSearch = document.getElementById('navbar-search');
 
+var data;
+
 function showDiv(selectedDiv) {
     const divs = [homeDiv, aboutDiv, contactDiv];
 
@@ -33,11 +35,77 @@ async function fetchData() {
             throw new Error(`Response status: ${response.status}`);
         }
 
-        const json = await response.json();
-        console.log(json);
+        data = await response.json();        
     } catch (error) {
         console.error(error.message);
     }
 }
 
-fetchData()
+fetchData();
+
+const searchInput = document.getElementById("searchInput");
+const searchButton = document.getElementById("searchButton");
+const resetButton = document.getElementById("resetButton");
+const resultsSection = document.getElementById("results");
+
+const keywords = {
+    countries: ["countries", "country", "australia", "japan", "brazil"],
+    temples: ["temples", "temple", "angkor wat", "taj mahal"],
+    beaches: ["beaches", "beach", "bora bora", "copacabana beach"]
+};
+
+function generateCards(categoryData) {
+    const block = document.createElement("div");
+    block.classList.add("block");
+    resultsSection.appendChild(block);
+    
+    categoryData.forEach((item) => {
+        const card = document.createElement("div");
+        card.classList.add("results-card");
+        console.log(item.cities);
+        if (item.cities) {
+            item.cities.forEach((city) => {
+                card.innerHTML = `
+                    <img src="${city.imageUrl}" alt="${city.name}" />
+                    <h4>${city.name}</h4>
+                    <p>${city.description}</p>
+                    <button>Visit</button>
+                `;
+            });            
+        } else {
+            card.innerHTML = `
+                <img src="${item.imageUrl}" alt="${item.name}" />
+                <h4>${item.name}</h4>
+                <p>${item.description}</p>
+                <button>Visit</button>
+            `;
+        }
+    
+        
+        resultsSection.appendChild(card);
+    });
+}
+
+searchButton.addEventListener("click", () => {
+    resultsSection.innerHTML = "";
+    const userInput = searchInput.value.trim().toLowerCase();
+
+    let foundCategory = null;
+    for (const category in keywords) {
+        if (keywords[category].includes(userInput)) {
+            foundCategory = category;
+            break;
+        }
+    }
+
+    if (foundCategory) {
+        generateCards(data[foundCategory]);
+    } else {
+        resultsSection.innerHTML = "<p>No results found. Please try a different keyword.</p>";
+    }
+});
+
+resetButton.addEventListener("click", () => {
+    searchInput.value = "";
+    resultsSection.innerHTML = "";
+});
