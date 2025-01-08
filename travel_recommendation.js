@@ -48,41 +48,67 @@ const searchButton = document.getElementById("searchButton");
 const resetButton = document.getElementById("resetButton");
 const resultsSection = document.getElementById("results");
 
+const timeZoneMap = {
+    japan: "Asia/Tokyo",
+    australia: "Australia/Sydney",
+    brazil: "America/Sao_Paulo"
+};
+
+function getTimeForCountry(countryName) {
+    const timeZone = timeZoneMap[countryName];
+    if (!timeZone) return;
+
+    const options = {
+        timeZone: timeZone,
+        hour12: true,
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric'
+    };
+
+    return new Date().toLocaleTimeString("en-US", options);
+}
+
 const keywords = {
     countries: ["countries", "country", "australia", "japan", "brazil"],
     temples: ["temples", "temple", "angkor wat", "taj mahal"],
     beaches: ["beaches", "beach", "bora bora", "copacabana beach"]
 };
 
-function generateCards(categoryData) {
-    const block = document.createElement("div");
-    block.classList.add("block");
-    resultsSection.appendChild(block);
+function generateCards(categoryData, userInput) {
+    const countryName = userInput.trim().toLowerCase();
+    const time = getTimeForCountry(countryName);
+    if (time) {
+        const block = document.createElement("div");
+        block.classList.add("block");
+        block.innerHTML = `Time in ${countryName.charAt(0).toUpperCase() + countryName.slice(1)}: ${time}`;
+        resultsSection.appendChild(block);
+    } 
     
-    categoryData.forEach((item) => {
-        const card = document.createElement("div");
-        card.classList.add("results-card");
-        console.log(item.cities);
+    categoryData.forEach((item) => {             
         if (item.cities) {
             item.cities.forEach((city) => {
+                const card = document.createElement("div");
+                card.classList.add("results-card");
                 card.innerHTML = `
                     <img src="${city.imageUrl}" alt="${city.name}" />
                     <h4>${city.name}</h4>
                     <p>${city.description}</p>
                     <button>Visit</button>
                 `;
+                resultsSection.appendChild(card);
             });            
         } else {
+            const card = document.createElement("div");
+            card.classList.add("results-card");
             card.innerHTML = `
                 <img src="${item.imageUrl}" alt="${item.name}" />
                 <h4>${item.name}</h4>
                 <p>${item.description}</p>
                 <button>Visit</button>
             `;
+            resultsSection.appendChild(card);
         }
-    
-        
-        resultsSection.appendChild(card);
     });
 }
 
@@ -90,16 +116,29 @@ searchButton.addEventListener("click", () => {
     resultsSection.innerHTML = "";
     const userInput = searchInput.value.trim().toLowerCase();
 
-    let foundCategory = null;
+    let foundData = null;
+
     for (const category in keywords) {
         if (keywords[category].includes(userInput)) {
-            foundCategory = category;
+            foundData = data[category];
             break;
         }
     }
 
-    if (foundCategory) {
-        generateCards(data[foundCategory]);
+    if (foundData) {
+        const filteredData = foundData.filter((item) => {
+            if (item.name && item.name.toLowerCase() === userInput) {
+                return true;
+            }
+            return false;
+        });;
+        if (filteredData.length > 0 && filteredData[0].cities) {
+            generateCards(filteredData[0].cities, userInput);
+        } else if (filteredData.length > 0) {
+            generateCards(filteredData, '');
+        } else {
+            generateCards(foundData, '');
+        }
     } else {
         resultsSection.innerHTML = "<p>No results found. Please try a different keyword.</p>";
     }
